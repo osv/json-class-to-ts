@@ -67,7 +67,7 @@ export class JSToTSCompiler {
   getInterfacesAndMethods() {
     const res: string[] = [];
     Object.entries(this.interfaces).forEach(([interfaceName, interf]) => {
-      if (interfaceName == ROOT_INTERFACE_NAME) {
+      if (interfaceName === ROOT_INTERFACE_NAME) {
         return;
       }
       keys(interf?.properties).forEach(propertyName =>
@@ -107,8 +107,8 @@ export class JSToTSCompiler {
       return null;
     }
     types = flatten(types);
-    const stringTypes = types.filter(it => it && it[0] == "'");
-    const isAllTypesAreStrings = stringTypes.length == types.length;
+    const stringTypes = types.filter(it => it && it[0] === "'");
+    const isAllTypesAreStrings = stringTypes.length === types.length;
     if (!isAllTypesAreStrings) return null;
     const uniqStrings = uniq(types);
     const numStringTypes = stringTypes.length;
@@ -116,7 +116,7 @@ export class JSToTSCompiler {
 
     const interfaceWithPropertyName = interfaceName + '.' + propertyName;
     if (
-      (this.options.className && propertyName == this.options.className) ||
+      (this.options.className && propertyName === this.options.className) ||
       this.options.enumForceProperties.some(it =>
         interfaceWithPropertyName.endsWith(it)
       ) ||
@@ -126,7 +126,7 @@ export class JSToTSCompiler {
         numStringTypes - numUniqStrings >=
           this.options.enumMinNumUniqueString &&
         numUniqStrings <= this.options.enumMaxNumUniqueString &&
-        !types.some(it => /[^a-zA-Z_.0-9\'-]/.test(it)))
+        !types.some(it => /[^a-zA-Z_.0-9-'']/.test(it)))
     ) {
       return uniqStrings;
     }
@@ -137,9 +137,9 @@ export class JSToTSCompiler {
   private removeStringEnums(types: any[]): any[] {
     return types.map(it => {
       if (isArray(it)) {
-        return it.map(it2 => (it2[0] == "'" ? 'string' : it2));
+        return it.map(it2 => (it2[0] === "'" ? 'string' : it2));
       } else {
-        return it[0] == "'" ? 'string' : it;
+        return it[0] === "'" ? 'string' : it;
       }
     });
   }
@@ -161,7 +161,7 @@ export class JSToTSCompiler {
       // otherwise, recursively process array and convert to Foo[] or Array<Foo | Bar>
       const types = data.map(it => this.recusiveTypeToTS(it));
       const arrayTypes = uniq(types);
-      const isAllSame = arrayTypes.length == 1;
+      const isAllSame = arrayTypes.length === 1;
       if (isAllSame) {
         if (arrayTypes[0].endsWith(']')) {
           return `Array<${arrayTypes[0]}>`;
@@ -232,7 +232,7 @@ export class JSToTSCompiler {
             isArray(property!.types[0])
           ) {
             // Create enum type
-            const enumName = interfaceName + '.' + propertyName + '.' + 'Enum';
+            const enumName = interfaceName + '.' + propertyName + '.Enum';
             enumTypeName = [enumName];
             this.enums[interfaceName] = this.enums[interfaceName] || [];
             this.enums[interfaceName]!.push({
@@ -330,7 +330,7 @@ export class JSToTSCompiler {
       if (this.options.enableIsClassExports && interf.isClass) {
         r += `export function is${interfaceName}(x: any): x is ${interfaceName} {return x && x['${className}'] == '${interfaceName}'}\n\n`;
       }
-      if (interfaceName == ROOT_INTERFACE_NAME) {
+      if (interfaceName === ROOT_INTERFACE_NAME) {
         r += `export type ${this.rootName} = ${interf.properties[
           ROOT_PROPERTY
         ]!.types.join(' | ')};\n\n`;
@@ -397,7 +397,7 @@ export enum ${it.name} {
   }
 
   private camelizeType(name) {
-    if (!name || name[0] == "'") return name;
+    if (!name || name[0] === "'") return name;
     return PRIMITIVES.includes(name) ? name : this.camelize(name);
   }
 
