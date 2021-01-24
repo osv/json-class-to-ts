@@ -1,0 +1,76 @@
+{
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "bin": {
+    "json-class-to-ts": "./bin/json-class-to-ts.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "test-watch": "tsdx test --watch --collect-coverage",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "peerDependencies": {},
+  "lint-staged": {
+    "src/**/*.{js,ts}": [
+      "prettier --write"
+    ],
+    "test/**/*.{js,ts}": [
+      "prettier --write"
+    ],
+    "bin/**/*.{js,ts}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "name": "json-class-to-ts",
+  "author": "Olexandr Sydorchuk",
+  "module": "dist/json-class-to-ts.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/json-class-to-ts.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/json-class-to-ts.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.9.1",
+    "husky": "^4.3.7",
+    "lint-staged": "^10.5.3",
+    "size-limit": "^4.9.1",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.1.0",
+    "typescript": "^4.1.3"
+  },
+  "dependencies": {
+    "@types/ramda": "^0.27.34",
+    "ramda": "^0.27.1"
+  }
+}
