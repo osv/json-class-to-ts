@@ -1,3 +1,6 @@
+![CI](https://github.com/osv/json-class-to-ts/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/osv/json-class-to-ts/branch/master/graph/badge.svg?token=XFADRQDQSG)](https://codecov.io/gh/osv/json-class-to-ts)
+
 # TSDX User Guide
 
 Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
@@ -33,7 +36,7 @@ Jest tests are set up to run with `npm test` or `yarn test`.
 ### Bundle Analysis
 
 [`size-limit`](https://github.com/ai/size-limit) is set up to calculate the real cost of your library with `npm run size` and visualize the bundle with `npm run analyze`.
-
+ 
 #### Setup Files
 
 This is the folder structure we set up for you:
