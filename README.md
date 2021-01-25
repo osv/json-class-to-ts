@@ -1,4 +1,5 @@
 ![CI](https://github.com/osv/json-class-to-ts/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/osv/json-class-to-ts/branch/master/graph/badge.svg?token=XFADRQDQSG)](https://codecov.io/gh/osv/json-class-to-ts)
 
 # TSDX User Guide
 
