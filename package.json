@@ -42,7 +42,7 @@
   "size-limit": [
     {
       "path": "dist/json-class-to-ts.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "20 KB"
     },
     {
       "path": "dist/json-class-to-ts.esm.js",
