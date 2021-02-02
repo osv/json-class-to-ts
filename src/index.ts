@@ -8,5 +8,8 @@ export function compile(
   options?: Partial<Options>
 ) {
   const compiler = new JSToTSCompiler(options);
+  if (!parentInterfaceName || parentInterfaceName === '') {
+    throw Error('parentInterfaceName should be defined');
+  }
   return compiler.build(samples, parentInterfaceName);
 }

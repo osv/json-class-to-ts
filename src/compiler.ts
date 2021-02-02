@@ -33,6 +33,15 @@ const PRIMITIVES = ['null', 'undefined', 'string', 'number', 'boolean'];
 const ROOT_INTERFACE_NAME = '$root$';
 const ROOT_PROPERTY = 'root';
 
+export const DEFAULT_OPTIONS = Object.freeze<Options>({
+  enableIsClassExports: false,
+  enumMinNumUniqueString: 3,
+  enumMaxNumUniqueString: 40,
+  enumMaxInlineItems: 6,
+  enumForceProperties: [],
+  enumForbidProperties: [],
+});
+
 export interface Options {
   className?: string;
   enableIsClassExports: boolean; // e.g `export function isFoo(x): x is Foo`
@@ -47,14 +56,7 @@ export class JSToTSCompiler {
   interfaces: Dictionary<CInterface> = {};
   enums: Dictionary<Array<{ name: string; list: string[] }>> = {}; // enums
   rootName: string = '';
-  options: Options = {
-    enableIsClassExports: false,
-    enumMinNumUniqueString: 2,
-    enumMaxNumUniqueString: 40,
-    enumMaxInlineItems: 6,
-    enumForceProperties: [],
-    enumForbidProperties: [],
-  };
+  options: Options = { ...DEFAULT_OPTIONS };
 
   constructor(options?: Partial<Options>) {
     this.options = Object.assign(this.options, options);
@@ -83,6 +85,7 @@ export class JSToTSCompiler {
   }
 
   build(data: any, parentInterfaceName: string) {
+    data = isArray(data) ? data : [data];
     this.enums = {};
     this.interfaces = {};
     parentInterfaceName = this.camelize(parentInterfaceName);
@@ -124,7 +127,7 @@ export class JSToTSCompiler {
         interfaceWithPropertyName.endsWith(it)
       ) &&
         numStringTypes - numUniqStrings >=
-          this.options.enumMinNumUniqueString &&
+          this.options.enumMinNumUniqueString - 1 &&
         numUniqStrings <= this.options.enumMaxNumUniqueString &&
         !types.some(it => /[^a-zA-Z_.0-9-'']/.test(it)))
     ) {
