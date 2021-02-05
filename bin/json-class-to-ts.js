@@ -1,3 +1,4 @@
+const fs = require('fs');
 const compile = require('../dist/index').compile;
 const DEFAULT_OPTIONS = require('../dist/index').DEFAULT_OPTIONS;
 
@@ -30,15 +31,14 @@ bin/json-class-to-ts.js --enumMinNumUniqueString -2
   .alias('o', 'out')
   .alias('h', 'help')
   .alias('r', 'root')
-  .alias('c', 'className')
+  .alias('c', 'config')
   .boolean('enableIsClassExports')
   .default('enumMaxInlineItems', DEFAULT_OPTIONS.enumMaxInlineItems)
   .default('enumMinNumUniqueString', DEFAULT_OPTIONS.enumMinNumUniqueString)
   .default('enumMaxNumUniqueString', DEFAULT_OPTIONS.enumMaxNumUniqueString)
-
   .describe('i', 'Input file. "-" - stdin')
   .describe('o', 'Output file name. "-" - stdout')
-  .describe('c', 'Class name property')
+  .describe('className', 'Class name property')
   .describe('enableIsClassExports', 'Add export functions for class check')
   .describe('enumMaxInlineItems', 'Max inline enums (1 | 2 | 3)')
   .describe(
@@ -57,22 +57,29 @@ bin/json-class-to-ts.js --enumMinNumUniqueString -2
     'enumForbidProperties',
     'List of properties with disabled enum creation even if satisfied with enumMinNumUniqueString, enumMaxNumUniqueString'
   )
-  .describe('r', 'Root interface name');
+  .describe('r', 'Root interface name')
+  .describe(
+    'c',
+    'Define options via JSON config file. Example of config:\n' +
+      JSON.stringify(DEFAULT_OPTIONS, null, 2)
+  );
 
 const argv = command.argv;
 
 if (argv.h) {
-  command.showHelp();
-  process.exit();
+  helpAndDie();
 }
 
 const inFile = argv.i;
 const outFile = argv.o;
 const rootInterface = argv.r;
-
+const configFile = argv.c;
 let data = '';
 
 if (inFile == '-') {
+  if (process.stdin.isTTY) {
+    helpAndDie();
+  }
   let input = process.stdin;
   input.resume();
   input.setEncoding('utf8');
@@ -95,7 +102,7 @@ function processData(text) {
 }
 
 function getOptions() {
-  const options = {};
+  let options = {};
   [
     'className',
     'enableIsClassExports',
@@ -111,5 +118,15 @@ function getOptions() {
     if (!argv[p]) return;
     options[p] = ('' + argv[p]).split(',');
   });
+
+  if (configFile) {
+    const optionsFromFile = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+    options = { ...optionsFromFile, ...options };
+  }
   return options;
+}
+
+function helpAndDie() {
+  command.showHelp();
+  process.exit();
 }
