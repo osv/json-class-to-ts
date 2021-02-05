@@ -17,10 +17,10 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
+    "prepublish": "yarn run build",
     "test": "tsdx test",
     "test-watch": "tsdx test --watch --collect-coverage",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why",
     "release": "np"
