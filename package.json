@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "bin": {
-    "json-class-to-ts": "./bin/json-class-to-ts.js"
+    "json-class-to-ts": "./bin/json-class-to-ts"
   },
   "files": [
     "bin",
