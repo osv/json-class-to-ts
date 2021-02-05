@@ -1,3 +1,4 @@
+const fs = require('fs');
 const compile = require('../dist/index').compile;
 const DEFAULT_OPTIONS = require('../dist/index').DEFAULT_OPTIONS;
 
@@ -11,16 +12,19 @@ Build typescript interfaces from json
 
 Examples:
   echo '{ "foo": 1}' | \\
-json-class-to-ts.js -r bar --enableIsClassExports
+json-class-to-ts -r bar --enableIsClassExports
 
   echo '{ "foo": 1, "@c": "Class1" }' | \\
-json-class-to-ts.js -c @c -r bar --enableIsClassExports
+json-class-to-ts --className @c -r bar --enableIsClassExports
 
   echo '{ "foo": 1, "bar": "some_value", "@c": "Class1" }' | \\
-json-class-to-ts.js -c @c  --enumForceProperties foo,bar
+json-class-to-ts --className @c  --enumForceProperties foo,bar
 
   echo '[{"foo": "a"}, {"foo": "a"}]' | \\
-bin/json-class-to-ts.js --enumMinNumUniqueString -2
+bin/json-class-to-ts --enumMinNumUniqueString -2
+
+Examaple of config file (see -c param):
+${JSON.stringify({ ...DEFAULT_OPTIONS, className: '@c' }, null, 2)}
 `
   )
   .default('i', '-')
@@ -30,15 +34,14 @@ bin/json-class-to-ts.js --enumMinNumUniqueString -2
   .alias('o', 'out')
   .alias('h', 'help')
   .alias('r', 'root')
-  .alias('c', 'className')
+  .alias('c', 'config')
   .boolean('enableIsClassExports')
   .default('enumMaxInlineItems', DEFAULT_OPTIONS.enumMaxInlineItems)
   .default('enumMinNumUniqueString', DEFAULT_OPTIONS.enumMinNumUniqueString)
   .default('enumMaxNumUniqueString', DEFAULT_OPTIONS.enumMaxNumUniqueString)
-
   .describe('i', 'Input file. "-" - stdin')
   .describe('o', 'Output file name. "-" - stdout')
-  .describe('c', 'Class name property')
+  .describe('className', 'Class name property')
   .describe('enableIsClassExports', 'Add export functions for class check')
   .describe('enumMaxInlineItems', 'Max inline enums (1 | 2 | 3)')
   .describe(
@@ -57,22 +60,25 @@ bin/json-class-to-ts.js --enumMinNumUniqueString -2
     'enumForbidProperties',
     'List of properties with disabled enum creation even if satisfied with enumMinNumUniqueString, enumMaxNumUniqueString'
   )
-  .describe('r', 'Root interface name');
+  .describe('r', 'Root interface name')
+  .describe('c', 'Define options via JSON config file.\n');
 
 const argv = command.argv;
 
 if (argv.h) {
-  command.showHelp();
-  process.exit();
+  helpAndDie();
 }
 
 const inFile = argv.i;
 const outFile = argv.o;
 const rootInterface = argv.r;
-
+const configFile = argv.c;
 let data = '';
 
 if (inFile == '-') {
+  if (process.stdin.isTTY) {
+    helpAndDie();
+  }
   let input = process.stdin;
   input.resume();
   input.setEncoding('utf8');
@@ -95,7 +101,7 @@ function processData(text) {
 }
 
 function getOptions() {
-  const options = {};
+  let options = {};
   [
     'className',
     'enableIsClassExports',
@@ -111,5 +117,15 @@ function getOptions() {
     if (!argv[p]) return;
     options[p] = ('' + argv[p]).split(',');
   });
+
+  if (configFile) {
+    const optionsFromFile = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+    options = { ...optionsFromFile, ...options };
+  }
   return options;
+}
+
+function helpAndDie() {
+  command.showHelp();
+  process.exit();
 }
