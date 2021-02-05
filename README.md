@@ -19,7 +19,7 @@ json-class-to-ts --className @c -r bar --enableIsClassExports
 
 Library:
 
-```
+```js
 compile([{ "foo": 1, "@c": "Class1" }], 'bar', {className: '@c', enableIsClassExports: true})
 //
 // export type Bar = Class1;
