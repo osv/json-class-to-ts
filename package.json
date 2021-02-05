@@ -23,6 +23,7 @@
     "lint": "tsdx lint",
     "size": "size-limit",
     "analyze": "size-limit --why",
+    "postbuild": "./postbuild.sh",
     "release": "np"
   },
   "peerDependencies": {},
