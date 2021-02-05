@@ -54,6 +54,7 @@
     "@size-limit/preset-small-lib": "^4.9.1",
     "@types/ramda": "^0.27.34",
     "husky": "^4.3.7",
+    "np": "^7.2.0",
     "size-limit": "^4.9.1",
     "tsdx": "^0.14.1",
     "tslib": "^2.1.0",
@@ -72,7 +73,7 @@
     "yarn": true
   },
   "dependencies": {
-    "ramda": "^0.27.1",
-    "optimist": "^0.6.1"
+    "optimist": "^0.6.1",
+    "ramda": "^0.27.1"
   }
 }
