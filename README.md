@@ -20,6 +20,8 @@ json-class-to-ts --className @c -r bar --enableIsClassExports
 Library:
 
 ```js
+import {compile} from 'json-class-to-ts';
+
 compile([{ "foo": 1, "@c": "Class1" }], 'bar', {className: '@c', enableIsClassExports: true})
 //
 // export type Bar = Class1;
@@ -56,15 +58,15 @@ Enums will be created automaticly if there is more than `enumMinNumUniqueString`
 
 Turn on `enableIsClassExports` flag if you need export function for testing interface with class property.
 
-# Build & test & development library
+# Build, test, development this library
 
-Develop mode:
+Development mode:
 
 ```
 npm start # or yarn start
 ```
 
-Testing and dev mode:
+Testing in development mode:
 
 ```
 yarn test-watch
