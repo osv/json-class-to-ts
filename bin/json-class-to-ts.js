@@ -120,7 +120,7 @@ function getOptions() {
 
   if (configFile) {
     const optionsFromFile = JSON.parse(fs.readFileSync(configFile, 'utf8'));
-    options = { ...optionsFromFile, ...options };
+    options = { ...options, ...optionsFromFile };
   }
   return options;
 }

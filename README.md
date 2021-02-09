@@ -58,6 +58,8 @@ Enums will be created automaticly if there is more than `enumMinNumUniqueString`
 
 Turn on `enableIsClassExports` flag if you need export function for testing interface with class property.
 
+Options can be set via config file and have higher priority than command line options
+
 # Build, test, development this library
 
 Development mode:
