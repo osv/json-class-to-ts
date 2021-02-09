@@ -58,6 +58,8 @@ Enums will be created automaticly if there is more than `enumMinNumUniqueString`
 
 Turn on `enableIsClassExports` flag if you need export function for testing interface with class property.
 
+`enumMinNumUniqueString` option allow you to set minimum of same values before making property as enum. Formula is `values.length - uniq(values) >= enumMinNumUniqueString - 1`
+
 Options can be set via config file and have higher priority than command line options
 
 # Build, test, development this library

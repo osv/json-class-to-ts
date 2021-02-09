@@ -12,19 +12,86 @@ describe('Enum', () => {
     ];
   });
 
-  test('when total prop values length > unique items by 2 and enumMaxInlineItems = 2', () => {
+  test('when found 2 times unique items', () => {
     expectJS2TS(
-      samples,
+      [
+        { prop1: 'val1', __class__: 'Class1' },
+        { prop1: 'val1', __class__: 'Class1' },
+        { prop1: 'val2', __class__: 'Class1' },
+        { prop1: 'val2', __class__: 'Class1' },
+        { prop1: 'val3', __class__: 'Class1' },
+      ],
       'fooInterface',
       `
 export type FooInterface = Class1;
 
 export interface Class1 {
-  prop1: 'val1' | 'val2' | '777';
+  prop1: 'val1' | 'val2' | 'val3';
   __class__: 'Class1';
-  prop2?: string;
 }
 `
+    );
+  });
+
+  test('when found 1 times unique items', () => {
+    expectJS2TS(
+      [
+        { prop1: 'val0', __class__: 'Class1' },
+        { prop1: 'val1', __class__: 'Class1' },
+        { prop1: 'val1', __class__: 'Class1' },
+        { prop1: 'val2', __class__: 'Class1' },
+        { prop1: 'val3', __class__: 'Class1' },
+      ],
+      'fooInterface',
+      `
+export type FooInterface = Class1;
+
+export interface Class1 {
+  prop1: string;
+  __class__: 'Class1';
+}
+`
+    );
+  });
+
+  test('when found 3 times unique items and enumMinNumUniqueString = 4', () => {
+    expectJS2TS(
+      [
+        { prop1: 'val1', __class__: 'Class1' },
+        { prop1: 'val1', __class__: 'Class1' },
+        { prop1: 'val1', __class__: 'Class1' },
+      ],
+      'fooInterface',
+      `
+export type FooInterface = Class1;
+
+export interface Class1 {
+  prop1: string;
+  __class__: 'Class1';
+}
+`,
+      { enumMinNumUniqueString: 4 }
+    );
+  });
+
+  test('when found 4 times unique items and enumMinNumUniqueString = 4', () => {
+    expectJS2TS(
+      [
+        { prop1: 'val1', __class__: 'Class1' },
+        { prop1: 'val1', __class__: 'Class1' },
+        { prop1: 'val1', __class__: 'Class1' },
+        { prop1: 'val1', __class__: 'Class1' },
+      ],
+      'fooInterface',
+      `
+export type FooInterface = Class1;
+
+export interface Class1 {
+  prop1: 'val1';
+  __class__: 'Class1';
+}
+`,
+      { enumMinNumUniqueString: 4 }
     );
   });
 
