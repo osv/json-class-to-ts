@@ -10,6 +10,7 @@ function isObject(object: any): object is Dictionary<any> & object {
 
 class CInterface {
   isClass: boolean = false;
+  classNameStr: string | undefined;
   properties: Dictionary<CInterfaceProperty> = {};
   isInitiated: boolean = false;
   constructor(public name: string) {}
@@ -296,7 +297,7 @@ export class JSToTSCompiler {
         className && data[className] ? data[className] : parentInterfaceName;
       const interf = this.getInterface(interfaceName);
       interf.isClass = !!className && !!data[className];
-
+      interf.classNameStr = className ? data[className] : undefined;
       // Traverse all know properties of interface and make optional if not met again
       if (interf.isInitiated) {
         forEachObjIndexed(propertyOfInterface => {
@@ -320,7 +321,8 @@ export class JSToTSCompiler {
       return interfaceName;
     } else {
       if (data === null) return 'null';
-      if (typeof data === 'string') return "'" + data + "'"; // add as string constants to make enums
+      if (typeof data === 'string')
+        return "'" + this.escapeSingleQuote(data) + "'"; // add as string constants to make enums
       return typeof data;
     }
   }
@@ -331,7 +333,9 @@ export class JSToTSCompiler {
     for (const interfaceName in this.interfaces) {
       const interf = this.interfaces[interfaceName]!;
       if (this.options.enableIsClassExports && interf.isClass) {
-        r += `export function is${interfaceName}(x: any): x is ${interfaceName} {return x && x['${className}'] == '${interfaceName}'}\n\n`;
+        r += `export function is${interfaceName}(x: any): x is ${interfaceName} {return x && x['${className}'] == '${this.escapeSingleQuote(
+          interf.classNameStr
+        )}'}\n\n`;
       }
       if (interfaceName === ROOT_INTERFACE_NAME) {
         r += `export type ${this.rootName} = ${interf.properties[
@@ -410,5 +414,9 @@ export enum ${it.name} {
         return chr.toUpperCase();
       })
       .trim();
+  }
+
+  private escapeSingleQuote(data: any): string {
+    return ('' + data).replace("'", "\\'");
   }
 }

@@ -197,16 +197,16 @@ export interface Class1 {
 describe('enableIsClassExports option', () => {
   test('exports "is" function if __class__ defined in sample', () => {
     expectJS2TS(
-      [{ prop1: 1, __class__: 'Class1' }],
+      [{ prop1: 1, __class__: "foo.bar.'Baz.123" }],
       'fooInterface',
       `
-export type FooInterface = Class1;
+export type FooInterface = FooBarBaz123;
 
-export function isClass1(x: any): x is Class1 {return x && x['__class__'] == 'Class1'}
+export function isFooBarBaz123(x: any): x is FooBarBaz123 {return x && x['__class__'] == 'foo.bar.\\'Baz.123'}
 
-export interface Class1 {
+export interface FooBarBaz123 {
   prop1: number;
-  __class__: 'Class1';
+  __class__: 'foo.bar.\\'Baz.123';
 }
 `,
       { enableIsClassExports: true }
